@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+ <?define ProductName="Autoruns" ?>
+ <?define ProductVersion="1.0.0.0" ?>
+ <?define ProductCode="7afaadee-7736-4f87-a1a3-679148569bf0"?>
+ <?define UpgradeCode="b22f326c-f745-49e6-902f-b2fe57b82af8"?>
+ <?define Manufacturer="BNTU"?>
+
+ <Product Id="$(var.ProductCode)" Name="$(var.ProductName)" Language="1049" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" />
+
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+          <Component Id="ProductComponent" Guid="0079de68-400b-45ba-8a4e-cc9acebcaef7">
+      		<File Id='autoruns' DiskId='1' Source='Autoruns\autoruns.exe'/>
+      		<File Id='autorunsc' DiskId='1' Source='Autoruns\autorunsc.exe'/>
+      		<File Id='Help' DiskId='1' Source='Autoruns\autoruns.chm'/>
+          </Component>
+        </Directory>
+      </Directory>
+   <Directory Id="ProgramMenuFolder">
+    <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)">
+     <Component Id="ApplicationShortcut" Guid="c20e17d4-da73-42e1-aa71-06f0ce898139">
+      <Shortcut Id="Shortcut"
+           Name="autoruns"
+           Description="$(var.ProductName)"
+           Target="[INSTALLLOCATION]autoruns.exe"
+           WorkingDirectory="INSTALLLOCATION"/>
+      <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+      <RegistryValue Root="HKCU" Key="Software\$(var.Manufacturer)\$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+     </Component>
+    </Directory>
+   </Directory>
+    </Directory>
+
+    <Feature Id="ProductFeature" Title="SetupProject" Level="1">
+   <ComponentRef Id="ProductComponent" />
+   <ComponentRef Id="ApplicationShortcut" />
+  </Feature>
+
+  <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" ></Property>
+  <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="Autoruns\Eula.rtf"/>
+  <UIRef Id="WixUI_InstallDir"/>
+  
+  </Product>
+</Wix>
